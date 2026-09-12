@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Conferência diária de insumos da Delícias DuFeDaJu e devolutiva das compras.">
+<meta name="theme-color" content="#13A793">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Insumos">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Conferência de Insumos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#FFFCF9; --surface:#FFFFFF; --surface-2:#F5F0E9;
+    --ink:#16201E; --ink-2:#5B6A66; --ink-3:#8C9793;
+    --line:#E6DFD5; --line-2:#D4CABD;
+    --brand:#13A793; --brand-soft:#DFF3EF; --brand-ink:#0A6B5E;
+    --warn:#F48634; --warn-soft:#FDEBDC; --warn-ink:#9E5410;
+    --crit:#C63A2C; --crit-soft:#FBE3E0; --crit-ink:#8C2318;
+    --on-fill:#FFFFFF;
+    --shadow:0 1px 2px rgba(22,32,30,.06), 0 8px 24px rgba(22,32,30,.06);
+    --r:14px;
+    --display:"Archivo","Arial Narrow",Arial,sans-serif;
+    --body:Arial,Helvetica,"Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#111815; --surface:#19211F; --surface-2:#212B28;
+      --ink:#EFEBE4; --ink-2:#A2AFAA; --ink-3:#78847F;
+      --line:#2A3532; --line-2:#3A4642;
+      --brand:#2FCBB5; --brand-soft:#12332E; --brand-ink:#7FE3D3;
+      --warn:#F79A50; --warn-soft:#3A2716; --warn-ink:#FBC08A;
+      --crit:#E4594A; --crit-soft:#3A1B17; --crit-ink:#F3968B;
+      --on-fill:#0E1513;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#111815; --surface:#19211F; --surface-2:#212B28;
+    --ink:#EFEBE4; --ink-2:#A2AFAA; --ink-3:#78847F;
+    --line:#2A3532; --line-2:#3A4642;
+    --brand:#2FCBB5; --brand-soft:#12332E; --brand-ink:#7FE3D3;
+    --warn:#F79A50; --warn-soft:#3A2716; --warn-ink:#FBC08A;
+    --crit:#E4594A; --crit-soft:#3A1B17; --crit-ink:#F3968B;
+    --on-fill:#0E1513;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--body); font-size:16px; line-height:1.45;
+    -webkit-text-size-adjust:100%; -webkit-tap-highlight-color:transparent;
+  }
+  button{font:inherit; color:inherit; cursor:pointer}
+  :focus-visible{outline:3px solid var(--brand); outline-offset:2px; border-radius:8px}
+
+  .wrap{max-width:820px; margin:0 auto; padding:0 16px 168px}
+
+  /* ---------- Cabeçalho ---------- */
+  .top{position:sticky; top:0; z-index:30; background:var(--bg); border-bottom:1px solid var(--line)}
+  .top-in{max-width:820px; margin:0 auto; padding:14px 16px 12px}
+  .brandline{display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brandmark{
+    font-family:var(--display); font-weight:700; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--brand-ink);
+  }
+  .top h1{
+    font-family:var(--display); font-weight:700; font-size:26px; line-height:1.1;
+    margin:6px 0 2px; letter-spacing:-.01em; text-wrap:balance;
+  }
+  .subline{font-size:13px; color:var(--ink-2); margin:0}
+  .icon-btn{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    width:44px; height:44px; display:grid; place-items:center; color:var(--ink-2); flex:0 0 auto;
+  }
+  .icon-btn:active{background:var(--surface-2)}
+  .head-acoes{display:flex; gap:8px; align-items:center}
+  .btn-nova{
+    display:flex; align-items:center; gap:7px; height:44px; padding:0 14px;
+    border-radius:11px; border:1px solid var(--line-2); background:var(--surface);
+    font-family:var(--display); font-weight:600; font-size:13px; color:var(--ink-2);
+  }
+  .btn-nova.ativa{border-color:var(--crit); color:var(--crit); background:var(--crit-soft)}
+  .btn-nova:active{transform:scale(.97)}
+
+  .progress{margin-top:12px}
+  .progress-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:12px; font-family:var(--display); font-weight:600;
+    text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3);
+  }
+  .progress-head b{
+    font-size:13px; color:var(--ink); font-variant-numeric:tabular-nums;
+    letter-spacing:0; text-transform:none;
+  }
+  .bar{
+    height:8px; border-radius:99px; background:var(--surface-2);
+    overflow:hidden; display:flex; margin-top:6px; border:1px solid var(--line);
+  }
+  .bar span{display:block; height:100%; transition:width .25s ease}
+  .bar .s-ok{background:var(--brand)}
+  .bar .s-baixo{background:var(--warn)}
+  .bar .s-falta{background:var(--crit)}
+
+  .filters{display:flex; gap:8px; margin-top:12px; overflow-x:auto; padding-bottom:2px}
+  .chip{
+    flex:0 0 auto; border:1px solid var(--line-2); background:var(--surface);
+    border-radius:99px; padding:8px 14px; font-size:13px; font-weight:bold;
+    color:var(--ink-2); white-space:nowrap;
+  }
+  .chip[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+  .chip .n{font-variant-numeric:tabular-nums; opacity:.7; margin-left:5px}
+
+  /* ---------- Lista ---------- */
+  .cat{margin-top:26px}
+  .cat-head{display:flex; align-items:center; gap:10px; padding:0 4px 8px}
+  .cat-head h2{
+    font-family:var(--display); font-weight:600; font-size:12px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin:0;
+  }
+  .cat-head .rule{flex:1; height:1px; background:var(--line)}
+  .cat-head .pend{
+    font-size:11px; font-family:var(--display); font-weight:600; color:var(--crit);
+    background:var(--crit-soft); padding:2px 8px; border-radius:99px;
+  }
+
+  .items{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .row{display:flex; align-items:center; gap:12px; padding:10px 12px; border-top:1px solid var(--line)}
+  .row:first-child{border-top:0}
+  .row.hit-ok{background:linear-gradient(90deg,var(--brand-soft),transparent 42%)}
+  .row.hit-baixo{background:linear-gradient(90deg,var(--warn-soft),transparent 42%)}
+  .row.hit-falta{background:linear-gradient(90deg,var(--crit-soft),transparent 42%)}
+  .emoji{
+    flex:0 0 auto; width:42px; height:42px; border-radius:12px;
+    background:var(--surface-2); border:1px solid var(--line);
+    display:grid; place-items:center; font-size:21px; line-height:1;
+  }
+  .row.hit-ok .emoji{background:var(--brand-soft); border-color:transparent}
+  .row.hit-baixo .emoji{background:var(--warn-soft); border-color:transparent}
+  .row.hit-falta .emoji{background:var(--crit-soft); border-color:transparent}
+  .nome{flex:1; min-width:0}
+  .nome b{display:block; font-weight:bold; font-size:15px; line-height:1.25}
+  .nome small{color:var(--ink-3); font-size:12px}
+  .tag{
+    display:inline-block; font-family:var(--display); font-weight:600; font-size:10px;
+    letter-spacing:.06em; text-transform:uppercase; padding:2px 7px; border-radius:99px;
+    margin-left:6px; vertical-align:1px;
+  }
+  .tag.t-falta{background:var(--crit-soft); color:var(--crit-ink)}
+  .tag.t-baixo{background:var(--warn-soft); color:var(--warn-ink)}
+
+  .seg{display:flex; gap:6px; flex:0 0 auto}
+  .seg button{
+    border:1px solid var(--line-2); background:var(--surface);
+    border-radius:11px; min-width:62px; height:52px; padding:0 6px;
+    font-family:var(--display); font-weight:600; font-size:12px;
+    letter-spacing:.03em; color:var(--ink-2); line-height:1.1;
+    display:grid; place-items:center; transition:transform .08s ease;
+  }
+  .seg button:active{transform:scale(.94)}
+  .seg button[aria-pressed="true"].v-ok{background:var(--brand); border-color:var(--brand); color:var(--on-fill)}
+  .seg button[aria-pressed="true"].v-baixo{background:var(--warn); border-color:var(--warn); color:var(--on-fill)}
+  .seg button[aria-pressed="true"].v-falta{background:var(--crit); border-color:var(--crit); color:var(--on-fill)}
+
+  .del{
+    border:1px solid var(--line-2); background:var(--surface); color:var(--crit);
+    width:40px; height:40px; border-radius:10px; display:none; place-items:center; font-size:18px;
+  }
+  body.editando .del{display:grid}
+  body.editando .seg{display:none}
+  .add-row{
+    display:none; gap:8px; padding:10px 12px; border-top:1px dashed var(--line-2);
+    background:var(--surface-2);
+  }
+  body.editando .add-row{display:flex}
+  .add-row input{
+    flex:1; min-width:0; font:inherit; font-size:14px; padding:10px 12px;
+    border:1px solid var(--line-2); border-radius:10px; background:var(--surface); color:var(--ink);
+  }
+  .add-row input.u{flex:0 0 76px}
+  .add-row button{
+    border:0; background:var(--brand); color:var(--on-fill); border-radius:10px;
+    padding:0 16px; font-family:var(--display); font-weight:600; font-size:14px;
+  }
+
+  .vazio{
+    text-align:center; color:var(--ink-3); font-size:14px;
+    padding:40px 20px; border:1px dashed var(--line-2); border-radius:var(--r); margin-top:24px;
+  }
+
+  /* ---------- Barra de ação ---------- */
+  .dock{
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    background:var(--surface); border-top:1px solid var(--line);
+    box-shadow:0 -8px 24px rgba(0,0,0,.07);
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .dock-in{max-width:820px; margin:0 auto; display:flex; align-items:center; gap:12px}
+  .tally{flex:1; min-width:0; display:flex; gap:14px; font-size:12px; color:var(--ink-2)}
+  .tally i{
+    font-style:normal; font-family:var(--display); font-weight:700; font-size:19px;
+    display:block; font-variant-numeric:tabular-nums; line-height:1.1;
+  }
+  .tally .t-falta i{color:var(--crit)}
+  .tally .t-baixo i{color:var(--warn)}
+  .tally .t-ok i{color:var(--brand)}
+  .cta{
+    border:0; background:var(--brand); color:var(--on-fill); border-radius:12px;
+    height:56px; padding:0 22px; font-family:var(--display); font-weight:700; font-size:16px;
+    display:flex; align-items:center; gap:9px; box-shadow:var(--shadow);
+  }
+  .cta[disabled]{background:var(--surface-2); color:var(--ink-3); box-shadow:none}
+  .cta:not([disabled]):active{transform:scale(.98)}
+
+  /* ---------- Painéis ---------- */
+  .backdrop{
+    position:fixed; inset:0; z-index:50; background:rgba(10,16,15,.5);
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  .backdrop.open{display:flex}
+  .sheet{
+    background:var(--bg); width:100%; max-width:820px; max-height:88vh; overflow:auto;
+    border-radius:18px 18px 0 0; border:1px solid var(--line); border-bottom:0;
+    padding:18px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+  .sheet h3{font-family:var(--display); font-weight:700; font-size:20px; margin:0 0 4px}
+  .sheet p.hint{margin:0 0 16px; font-size:13px; color:var(--ink-2)}
+  .preview{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; font-size:14px; white-space:pre-wrap; word-break:break-word;
+    line-height:1.55; max-height:34vh; overflow:auto;
+  }
+  .passos{
+    margin:14px 0 0; padding:0; list-style:none; counter-reset:p;
+    border:1px solid var(--line); border-radius:12px; background:var(--surface); overflow:hidden;
+  }
+  .passos li{
+    counter-increment:p; display:flex; gap:11px; align-items:flex-start;
+    padding:11px 14px; font-size:14px; border-top:1px solid var(--line); line-height:1.4;
+  }
+  .passos li:first-child{border-top:0}
+  .passos li > span{flex:1; min-width:0}
+  .passos li::before{
+    content:counter(p); flex:0 0 22px; height:22px; border-radius:50%;
+    background:var(--brand); color:var(--on-fill); display:grid; place-items:center;
+    font-family:var(--display); font-weight:700; font-size:12px;
+  }
+  .field{margin-top:14px}
+  .field label{
+    display:block; font-family:var(--display); font-weight:600; font-size:11px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px;
+  }
+  .field input, .field textarea{
+    width:100%; font:inherit; font-size:15px; padding:12px 14px; color:var(--ink);
+    border:1px solid var(--line-2); border-radius:11px; background:var(--surface);
+  }
+  .field textarea{min-height:76px; resize:vertical}
+  .field .help{font-size:12px; color:var(--ink-3); margin-top:6px}
+  .aviso{
+    margin-top:12px; padding:12px 14px; border-radius:11px;
+    background:var(--warn-soft); border:1px solid var(--warn);
+    font-size:13px; line-height:1.5; color:var(--ink);
+  }
+  .aviso b{font-family:var(--display)}
+  .sheet-actions{display:flex; gap:10px; margin-top:18px}
+  .sheet-actions button{
+    flex:1; height:54px; border-radius:12px; font-family:var(--display);
+    font-weight:700; font-size:15px; border:1px solid var(--line-2);
+    background:var(--surface); color:var(--ink);
+  }
+  .sheet-actions button.primary{background:var(--brand); border-color:var(--brand); color:var(--on-fill)}
+
+  .toast{
+    position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(12px);
+    background:var(--ink); color:var(--bg); padding:11px 18px; border-radius:99px;
+    font-size:14px; font-weight:bold; z-index:60; opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; max-width:90vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+  @media (max-width:520px){
+    .seg button{min-width:54px; font-size:11px}
+    .top h1{font-size:22px}
+    .btn-nova span{display:none}
+    .btn-nova{padding:0 12px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brandline">
+      <span class="brandmark">Delícias DuFeDaJu</span>
+      <div class="head-acoes" id="head-acoes">
+        <button class="btn-nova" id="btn-nova">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+          <span>Nova conferência</span>
+        </button>
+        <button class="icon-btn" id="btn-config" aria-label="Ajustes">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.35.42.63.77.77H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <h1 id="titulo">Conferência de insumos</h1>
+    <p class="subline" id="subline">Marque item por item e envie o que falta.</p>
+
+    <div class="progress">
+      <div class="progress-head"><span id="prog-rot">Conferidos</span><b id="prog-txt">0 de 0</b></div>
+      <div class="bar" role="img" aria-label="Progresso">
+        <span class="s-ok" id="bar-ok" style="width:0"></span>
+        <span class="s-baixo" id="bar-baixo" style="width:0"></span>
+        <span class="s-falta" id="bar-falta" style="width:0"></span>
+      </div>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="chip" data-f="todos" aria-pressed="true">Todos <span class="n" id="c-todos">0</span></button>
+      <button class="chip" data-f="pendentes" aria-pressed="false"><span id="rot-pend">Não conferidos</span> <span class="n" id="c-pendentes">0</span></button>
+      <button class="chip" data-f="comprar" aria-pressed="false"><span id="rot-comprar">Precisa comprar</span> <span class="n" id="c-comprar">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="lista"></main>
+
+<div class="dock">
+  <div class="dock-in">
+    <div class="tally">
+      <div class="t-falta"><i id="n-falta">0</i><span id="rot-falta">acabou</span></div>
+      <div class="t-baixo"><i id="n-baixo">0</i><span id="rot-baixo">acabando</span></div>
+      <div class="t-ok"><i id="n-ok">0</i><span id="rot-ok">tem</span></div>
+    </div>
+    <button class="cta" id="btn-enviar" disabled>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      <span id="cta-txt">Copiar</span>
+    </button>
+  </div>
+</div>
+
+<div class="backdrop" id="bd-envio">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Copiar mensagem">
+    <h3 id="envio-titulo">Lista para o grupo</h3>
+    <p class="hint" id="envio-hint">Confira o texto, copie e cole no WhatsApp.</p>
+    <div class="preview" id="preview"></div>
+    <div class="aviso" id="aviso-link" hidden>
+      <b>Falta o endereço do app.</b> Sem ele a mensagem vai sem o link da lista de compras.
+      Preencha em Ajustes → Endereço do app.
+    </div>
+    <div class="field" id="campo-obs">
+      <label for="obs">Observação (opcional)</label>
+      <textarea id="obs" placeholder="Ex.: o gás está na reserva, dá pra hoje só"></textarea>
+    </div>
+    <ol class="passos">
+      <li><span>Toque em <b>Copiar mensagem</b>.</span></li>
+      <li><span>Abra o WhatsApp e entre no grupo.</span></li>
+      <li><span>Segure o campo de texto e toque em <b>Colar</b>. Depois é só enviar.</span></li>
+    </ol>
+    <div class="sheet-actions">
+      <button id="fechar-envio">Voltar</button>
+      <button class="primary" id="copiar">Copiar mensagem</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="bd-config">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Ajustes">
+    <h3>Ajustes</h3>
+    <p class="hint">Estas informações ficam salvas neste aparelho.</p>
+    <div class="field">
+      <label for="quem">Quem está conferindo</label>
+      <input id="quem" placeholder="Kátia">
+    </div>
+    <div class="field">
+      <label for="grupo">Nome do grupo no WhatsApp</label>
+      <input id="grupo" placeholder="Compras Delícias">
+      <p class="help">Só para aparecer na tela de envio e não haver dúvida de onde colar.</p>
+    </div>
+    <div class="field">
+      <label for="base">Endereço do app</label>
+      <input id="base" inputmode="url" placeholder="https://...">
+      <p class="help">É o endereço que vai no link da lista de compras da Daniela. Se você abrir
+      o app pela internet, ele se preenche sozinho.</p>
+    </div>
+    <div class="field">
+      <label>Lista de itens</label>
+      <button id="btn-editar" style="width:100%;height:50px;border-radius:11px;border:1px solid var(--line-2);background:var(--surface);font-family:var(--display);font-weight:600">Editar itens da lista</button>
+      <p class="help">Adicione o que faltar ou remova o que vocês não usam mais.</p>
+    </div>
+    <div class="sheet-actions">
+      <button class="primary" id="fechar-config">Pronto</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="bd-zerar">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Nova conferência">
+    <h3>Começar uma nova conferência?</h3>
+    <p class="hint" id="zerar-hint">Isso apaga as marcações desta conferência. A lista de itens continua a mesma.</p>
+    <div class="sheet-actions">
+      <button id="zerar-nao">Não, continuar</button>
+      <button class="primary" id="zerar-sim">Sim, começar do zero</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================================
+     Um arquivo, dois modos.
+     LOJA   — a Kátia confere o estoque e copia a lista para o grupo.
+     COMPRA — a Daniela abre o link da mensagem e dá a devolutiva.
+     O que separa os dois é o endereço: se tiver "#c=", é modo compra.
+     A lista viaja dentro do próprio link, então não existe servidor
+     nem cadastro em lugar nenhum.
+     ===================================================================== */
+
+  var CATALOGO = [
+    ["Hortifruti", [
+      ["Alface","un"],["Tomate","kg"],["Cebola","kg"],["Cebola roxa","kg"],["Alho","kg"],
+      ["Cheiro verde","maço"],["Cebolinha","maço"],["Couve","maço"],["Limão","kg"],
+      ["Laranja","kg"],["Mandioca descascada","kg"]
+    ]],
+    ["Carnes e proteínas", [
+      ["Carne de hambúrguer","kg"],["Hambúrguer polpetone","pacote"],
+      ["Filé de peito de frango","bandeja"],["Filé de tilápia","kg"],
+      ["Salsicha","kg"],["Bacon fatiado","kg"],["Ovo","cartela"]
+    ]],
+    ["Frios e laticínios", [
+      ["Mussarela","kg"],["Queijo coalho","pacote"],["Queijo Vigor (peça)","un"],
+      ["Requeijão Catupiry","un"]
+    ]],
+    ["Pães", [ ["Pão de hambúrguer","un"],["Pão de cachorro-quente","un"] ]],
+    ["Congelados", [ ["Batata pré-frita","pacote"] ]],
+    ["Mercearia", [
+      ["Farinha de trigo","pacote"],["Fubá","pacote"],["Fermento químico","un"],
+      ["Leite de coco","un"],["Ketchup","un"],["Milho em conserva","lata"],
+      ["Batata palha","pacote"]
+    ]],
+    ["Confeitaria e doces", [ ["Doce de leite","pacote"],["Confeito perolado","un"] ]],
+    ["Bebidas", [
+      ["Refrigerante KC Zero PET","caixa"],["Coca-Cola lata","caixa"],
+      ["Coca-Cola vidro retornável","caixa"],["Cerveja Heineken 600ml","caixa"],
+      ["Cerveja Original 600ml","dúzia"],["Cerveja Antarctica 600ml","dúzia"],
+      ["Acquamix (soda italiana)","un"],["Saquê","un"]
+    ]],
+    ["Embalagens e descartáveis", [
+      ["Saco plástico 20x30","kg"],["Saco plástico 15x25","kg"],["Saco hot dog 22x21","un"],
+      ["Bandeja laminada","un"],["Caixa para bolo","un"],["Cakeboard / base de bolo","un"],
+      ["Embalagem de torta","un"],["Flor de papel decorativa","pacote"]
+    ]]
+  ];
+
+  var EMOJI = {
+    "Alface":"🥬","Tomate":"🍅","Cebola":"🧅","Cebola roxa":"🧅","Alho":"🧄",
+    "Cheiro verde":"🌿","Cebolinha":"🌿","Couve":"🥬","Limão":"🍋","Laranja":"🍊",
+    "Mandioca descascada":"🥔",
+    "Carne de hambúrguer":"🥩","Hambúrguer polpetone":"🍔","Filé de peito de frango":"🍗",
+    "Filé de tilápia":"🐟","Salsicha":"🌭","Bacon fatiado":"🥓","Ovo":"🥚",
+    "Mussarela":"🧀","Queijo coalho":"🧀","Queijo Vigor (peça)":"🧀","Requeijão Catupiry":"🫕",
+    "Pão de hambúrguer":"🍞","Pão de cachorro-quente":"🥖",
+    "Batata pré-frita":"🍟",
+    "Farinha de trigo":"🌾","Fubá":"🌽","Fermento químico":"🧁","Leite de coco":"🥥",
+    "Ketchup":"🥫","Milho em conserva":"🥫","Batata palha":"🍟",
+    "Doce de leite":"🍮","Confeito perolado":"✨",
+    "Refrigerante KC Zero PET":"🥤","Coca-Cola lata":"🥤","Coca-Cola vidro retornável":"🥤",
+    "Cerveja Heineken 600ml":"🍺","Cerveja Original 600ml":"🍺","Cerveja Antarctica 600ml":"🍺",
+    "Acquamix (soda italiana)":"🍹","Saquê":"🍶",
+    "Saco plástico 20x30":"🛍️","Saco plástico 15x25":"🛍️","Saco hot dog 22x21":"🥡",
+    "Bandeja laminada":"🍽️","Caixa para bolo":"📦","Cakeboard / base de bolo":"🎂",
+    "Embalagem de torta":"🥧","Flor de papel decorativa":"🌸"
+  };
+  var PALAVRAS = [
+    [/gas|botij/,"🔥"],[/oleo/,"🫗"],[/^sal$|sal /,"🧂"],[/acucar/,"🍬"],
+    [/arroz|feijao/,"🍚"],[/leite conden/,"🥫"],[/leite/,"🥛"],[/manteiga|margarina/,"🧈"],
+    [/cafe/,"☕"],[/chocolate|nutella|granulado/,"🍫"],[/morango/,"🍓"],[/banana/,"🍌"],
+    [/abacaxi/,"🍍"],[/maca/,"🍎"],[/melancia/,"🍉"],[/uva/,"🍇"],[/batata/,"🥔"],
+    [/cenoura/,"🥕"],[/pimenta/,"🌶️"],[/milho/,"🌽"],[/pao/,"🍞"],[/bolo/,"🎂"],
+    [/queijo/,"🧀"],[/carne|picanha|costela|patinho/,"🥩"],[/frango|peito/,"🍗"],
+    [/peixe|tilapia|camarao/,"🐟"],[/bacon/,"🥓"],[/ovo/,"🥚"],
+    [/cerveja|chopp/,"🍺"],[/refri|coca|guarana|fanta|soda/,"🥤"],[/agua/,"💧"],
+    [/suco/,"🧃"],[/vinho/,"🍷"],[/whisky|vodka|gin|cachaca/,"🥃"],
+    [/guardanapo|papel/,"🧻"],[/detergente|sabao|limpeza|alcool/,"🧼"],[/luva/,"🧤"],
+    [/saco|sacola|embalagem|caixa|pote|marmita/,"📦"],[/copo|canudo/,"🥤"],
+    [/talher|garfo|faca/,"🍴"],[/gelo/,"🧊"],
+    [/molho|maionese|mostarda|barbecue/,"🥫"],[/tempero|oregano/,"🌿"]
+  ];
+  var EMOJI_CAT = {
+    "Hortifruti":"🥬","Carnes e proteínas":"🥩","Frios e laticínios":"🧀","Pães":"🍞",
+    "Congelados":"🧊","Mercearia":"🥫","Confeitaria e doces":"🧁","Bebidas":"🥤",
+    "Embalagens e descartáveis":"📦"
+  };
+  function semAcento(s){
+    return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  }
+  function emojiDe(nome, cat){
+    if(EMOJI[nome]) return EMOJI[nome];
+    var n = semAcento(nome);
+    for(var i = 0; i < PALAVRAS.length; i++){ if(PALAVRAS[i][0].test(n)) return PALAVRAS[i][1]; }
+    return EMOJI_CAT[cat] || "📦";
+  }
+  function slug(s){ return semAcento(s).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+
+  /* Catálogo achatado: a posição aqui é o código do item dentro do link. */
+  var PLANO = [];
+  CATALOGO.forEach(function(c){
+    c[1].forEach(function(it){
+      PLANO.push({ nome:it[0], unid:it[1], cat:c[0] });
+    });
+  });
+
+  var ESTADOS_LOJA   = [["falta","Acabou"],["baixo","Acabando"],["ok","Tem"]];
+  var ESTADOS_COMPRA = [["falta","Não achei"],["baixo","Não comprei"],["ok","Comprei"]];
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function dois(n){ return String(n).padStart(2,"0"); }
+  function agora(){
+    var d = new Date();
+    return { data: dois(d.getDate()) + "/" + dois(d.getMonth()+1) + "/" + d.getFullYear(),
+             curta: dois(d.getDate()) + "/" + dois(d.getMonth()+1),
+             hora: dois(d.getHours()) + ":" + dois(d.getMinutes()) };
+  }
+
+  /* ---------- Link: texto <-> base64 seguro para URL ---------- */
+  function paraB64(txt){
+    var bytes = new TextEncoder().encode(txt), bin = "";
+    for(var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
+  function deB64(s){
+    s = s.replace(/-/g,"+").replace(/_/g,"/");
+    while(s.length % 4) s += "=";
+    var bin = atob(s), bytes = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  /* ================= MODO COMPRA (a tela da Daniela) ================= */
+
+  function lerLink(){
+    var h = location.hash || "";
+    var m = h.match(/[#&]c=([A-Za-z0-9\-_]+)/);
+    if(!m) return null;
+    try{
+      var p = deB64(m[1]).split("|");
+      if(p[0] !== "v1") return null;
+      var d = { quem:p[1] || "Kátia", quando:p[2] || "", itens:[] };
+      (p[3] || "").split(";").forEach(function(par){
+        if(!par) return;
+        var a = par.split(":");
+        var base = PLANO[Number(a[0])];
+        if(base) d.itens.push({ nome:base.nome, unid:base.unid, cat:base.cat, urg:a[1] });
+      });
+      (p[4] || "").split(";").forEach(function(par){
+        if(!par) return;
+        var a = par.split("~");
+        d.itens.push({ nome:a[0], unid:a[1] || "un", cat:a[2] || "Outros", urg:a[3] });
+      });
+      d.itens.forEach(function(i){ i.emoji = emojiDe(i.nome, i.cat); i.id = slug(i.cat + "-" + i.nome); });
+      return d.itens.length ? d : null;
+    }catch(e){ return null; }
+  }
+
+  /* ================= ESTADO DO MODO LOJA ================= */
+
+  var K = "ddfj-insumos-v1";
+  function carregar(){
+    var base = { marcas:{}, extras:[], ocultos:[], quem:"Kátia", grupo:"", base:"", obs:"", ultimo:"" };
+    try{
+      var raw = localStorage.getItem(K);
+      if(raw){ var o = JSON.parse(raw); for(var k in base){ if(o[k] != null) base[k] = o[k]; } }
+    }catch(e){}
+    return base;
+  }
+  var st = carregar();
+  function salvar(){ try{ localStorage.setItem(K, JSON.stringify(st)); }catch(e){} }
+
+  /* ================= O QUE MUDA ENTRE OS MODOS ================= */
+
+  var LINK = lerLink();
+  var COMPRA = !!LINK;
+  var ESTADOS = COMPRA ? ESTADOS_COMPRA : ESTADOS_LOJA;
+  var marcas = COMPRA ? {} : st.marcas;
+  var KC = "";
+
+  if(COMPRA){
+    KC = "ddfj-compra-" + slug(LINK.quem + LINK.quando) + "-" + LINK.itens.length;
+    try{ marcas = JSON.parse(localStorage.getItem(KC) || "{}"); }catch(e){ marcas = {}; }
+  }
+  function salvaMarcas(){
+    if(COMPRA){ try{ localStorage.setItem(KC, JSON.stringify(marcas)); }catch(e){} }
+    else { st.marcas = marcas; salvar(); }
+  }
+
+  function itens(){
+    if(COMPRA) return LINK.itens.slice();
+    var out = [];
+    PLANO.forEach(function(it){
+      out.push({ id:slug(it.cat + "-" + it.nome), nome:it.nome, unid:it.unid, cat:it.cat,
+                 emoji:emojiDe(it.nome, it.cat), extra:false });
+    });
+    st.extras.forEach(function(e){
+      out.push({ id:e.id, nome:e.nome, unid:e.unid, cat:e.cat,
+                 emoji:emojiDe(e.nome, e.cat), extra:true });
+    });
+    return out.filter(function(i){ return st.ocultos.indexOf(i.id) === -1; });
+  }
+
+  /* ================= TELA ================= */
+
+  var filtro = "todos";
+  var lista = document.getElementById("lista");
+
+  function passaFiltro(it){
+    var v = marcas[it.id];
+    if(filtro === "pendentes") return !v;
+    if(filtro === "comprar") return v === "falta" || v === "baixo";
+    return true;
+  }
+
+  function render(){
+    var todos = itens();
+    var cats = [];
+    todos.forEach(function(i){ if(cats.indexOf(i.cat) === -1) cats.push(i.cat); });
+
+    var editando = document.body.classList.contains("editando");
+    var html = "", visiveis = 0;
+
+    cats.forEach(function(cat){
+      var doGrupo = todos.filter(function(i){ return i.cat === cat; });
+      var mostra = doGrupo.filter(passaFiltro);
+      var alvo = editando ? doGrupo : mostra;
+      if(!alvo.length && !editando) return;
+      visiveis += alvo.length;
+
+      var pend = doGrupo.filter(function(i){
+        var v = marcas[i.id]; return v === "falta" || v === "baixo";
+      }).length;
+
+      html += '<section class="cat"><div class="cat-head"><h2>' + esc(cat) + '</h2>'
+        + '<div class="rule"></div>'
+        + (pend ? '<span class="pend">' + pend + (COMPRA ? ' pendente' + (pend > 1 ? "s" : "") : ' p/ comprar') + '</span>' : '')
+        + '</div><div class="items">';
+
+      alvo.forEach(function(it){
+        var v = marcas[it.id] || "";
+        html += '<div class="row' + (v ? ' hit-' + v : '') + '">'
+          + (COMPRA ? '' : '<button class="del" data-del="' + it.id + '" aria-label="Remover ' + esc(it.nome) + '">&times;</button>')
+          + '<span class="emoji" aria-hidden="true">' + it.emoji + '</span>'
+          + '<div class="nome"><b>' + esc(it.nome)
+          + (COMPRA && it.urg ? '<span class="tag t-' + it.urg + '">'
+              + (it.urg === "falta" ? "acabou" : "acabando") + '</span>' : '')
+          + '</b><small>' + esc(it.unid) + '</small></div>'
+          + '<div class="seg" role="group" aria-label="' + esc(it.nome) + '">';
+        ESTADOS.forEach(function(e){
+          html += '<button class="v-' + e[0] + '" data-set="' + it.id + '" data-v="' + e[0] + '"'
+            + ' aria-pressed="' + (v === e[0] ? "true" : "false") + '">' + e[1] + '</button>';
+        });
+        html += '</div></div>';
+      });
+
+      if(!COMPRA){
+        html += '<div class="add-row"><input placeholder="Novo item em ' + esc(cat) + '" data-add-nome="' + esc(cat) + '">'
+          + '<input class="u" placeholder="un" data-add-unid="' + esc(cat) + '">'
+          + '<button data-add="' + esc(cat) + '">Add</button></div>';
+      }
+      html += '</div></section>';
+    });
+
+    if(!visiveis){
+      html = '<div class="vazio">' + (filtro === "comprar"
+        ? (COMPRA ? "Nada pendente. Tudo resolvido." : "Nada marcado como acabando ou acabou. Estoque em dia.")
+        : (COMPRA ? "Você já passou por todos os itens." : "Todos os itens já foram conferidos.")) + '</div>';
+    }
+    lista.innerHTML = html;
+    atualizaTopo(todos);
+  }
+
+  function pct(a, b){ return b ? (a * 100 / b).toFixed(2) + "%" : "0%"; }
+
+  function atualizaTopo(todos){
+    var n = { ok:0, baixo:0, falta:0 };
+    todos.forEach(function(i){ var v = marcas[i.id]; if(v) n[v]++; });
+    var total = todos.length, feitos = n.ok + n.baixo + n.falta;
+    var pendentes = n.falta + n.baixo;
+
+    document.getElementById("prog-txt").textContent = feitos + " de " + total;
+    document.getElementById("bar-ok").style.width = pct(n.ok, total);
+    document.getElementById("bar-baixo").style.width = pct(n.baixo, total);
+    document.getElementById("bar-falta").style.width = pct(n.falta, total);
+
+    document.getElementById("n-ok").textContent = n.ok;
+    document.getElementById("n-baixo").textContent = n.baixo;
+    document.getElementById("n-falta").textContent = n.falta;
+
+    document.getElementById("c-todos").textContent = total;
+    document.getElementById("c-pendentes").textContent = total - feitos;
+    document.getElementById("c-comprar").textContent = pendentes;
+
+    var cta = document.getElementById("btn-enviar");
+    var txt = document.getElementById("cta-txt");
+    if(COMPRA){
+      cta.disabled = feitos === 0;
+      txt.textContent = feitos ? "Devolutiva (" + feitos + ")" : "Devolutiva";
+    } else {
+      cta.disabled = pendentes === 0;
+      txt.textContent = pendentes ? "Copiar (" + pendentes + ")" : "Copiar";
+      var nova = document.getElementById("btn-nova");
+      nova.disabled = feitos === 0;
+      nova.classList.toggle("ativa", feitos > 0);
+      nova.style.opacity = feitos === 0 ? ".45" : "1";
+      document.getElementById("subline").textContent = st.ultimo
+        ? "Última lista copiada em " + st.ultimo + "."
+        : "Marque item por item e envie o que falta.";
+    }
+  }
+
+  function atualizaLinha(row, id){
+    if(!row) return;
+    var v = marcas[id] || "";
+    row.className = "row" + (v ? " hit-" + v : "");
+    [].forEach.call(row.querySelectorAll("[data-set]"), function(btn){
+      btn.setAttribute("aria-pressed", btn.dataset.v === v ? "true" : "false");
+    });
+    var sec = row.closest(".cat");
+    if(sec){
+      var ids = [].map.call(sec.querySelectorAll(".row [data-set]"), function(x){ return x.dataset.set; });
+      var unicos = ids.filter(function(x, i){ return ids.indexOf(x) === i; });
+      var pend = unicos.filter(function(x){
+        return marcas[x] === "falta" || marcas[x] === "baixo";
+      }).length;
+      var badge = sec.querySelector(".pend");
+      if(pend && !badge){
+        badge = document.createElement("span");
+        badge.className = "pend";
+        sec.querySelector(".cat-head").appendChild(badge);
+      }
+      if(badge){
+        if(pend) badge.textContent = pend + (COMPRA ? " pendente" + (pend > 1 ? "s" : "") : " p/ comprar");
+        else badge.remove();
+      }
+    }
+    atualizaTopo(itens());
+  }
+
+  lista.addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+
+    if(b.dataset.set){
+      var id = b.dataset.set, v = b.dataset.v;
+      marcas[id] = (marcas[id] === v) ? undefined : v;
+      if(!marcas[id]) delete marcas[id];
+      salvaMarcas();
+      if(filtro === "todos") atualizaLinha(b.closest(".row"), id);
+      else render();
+      return;
+    }
+    if(b.dataset.del){
+      var did = b.dataset.del;
+      st.extras = st.extras.filter(function(e){ return e.id !== did; });
+      if(st.ocultos.indexOf(did) === -1) st.ocultos.push(did);
+      delete marcas[did];
+      salvaMarcas(); salvar(); render(); toast("Item removido");
+      return;
+    }
+    if(b.dataset.add){
+      var cat = b.dataset.add;
+      var iNome = lista.querySelector('[data-add-nome="' + cat.replace(/"/g,'\\"') + '"]');
+      var iUn = lista.querySelector('[data-add-unid="' + cat.replace(/"/g,'\\"') + '"]');
+      var nome = (iNome.value || "").trim();
+      if(!nome){ iNome.focus(); return; }
+      st.extras.push({ id:"x-" + slug(cat + "-" + nome) + "-" + Date.now().toString(36),
+                       nome:nome, unid:(iUn.value || "un").trim() || "un", cat:cat });
+      salvar(); render(); toast(nome + " adicionado");
+    }
+  });
+
+  document.getElementById("filters").addEventListener("click", function(ev){
+    var b = ev.target.closest(".chip"); if(!b) return;
+    filtro = b.dataset.f;
+    [].forEach.call(this.querySelectorAll(".chip"), function(c){
+      c.setAttribute("aria-pressed", c === b ? "true" : "false");
+    });
+    render();
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
+
+  /* ================= MENSAGENS ================= */
+
+  function montaLink(){
+    var raiz = (st.base || "").trim();
+    if(!raiz) return "";
+    var t = agora();
+    var base = [], extra = [];
+    itens().forEach(function(i){
+      var v = marcas[i.id];
+      if(v !== "falta" && v !== "baixo") return;
+      var idx = -1;
+      for(var k = 0; k < PLANO.length; k++){
+        if(PLANO[k].nome === i.nome && PLANO[k].cat === i.cat){ idx = k; break; }
+      }
+      if(idx >= 0) base.push(idx + ":" + v);
+      else extra.push([i.nome, i.unid, i.cat, v].join("~"));
+    });
+    if(!base.length && !extra.length) return "";
+    var carga = ["v1", st.quem || "Kátia", t.curta + " " + t.hora, base.join(";"), extra.join(";")].join("|");
+    return raiz.replace(/#.*$/, "") + "#c=" + paraB64(carga);
+  }
+
+  function textoLoja(){
+    var falta = [], baixo = [];
+    itens().forEach(function(i){
+      var v = marcas[i.id];
+      if(v === "falta") falta.push(i);
+      if(v === "baixo") baixo.push(i);
+    });
+    var t = agora(), L = [];
+    L.push("*Delícias DuFeDaJu — lista de compras*");
+    L.push(t.data + " às " + t.hora + " · conferido por " + (st.quem || "Kátia"));
+    if(falta.length){
+      L.push("");
+      L.push("*ACABOU (" + falta.length + ")*");
+      falta.forEach(function(i){ L.push(i.emoji + " " + i.nome + " — " + i.unid); });
+    }
+    if(baixo.length){
+      L.push("");
+      L.push("*ESTÁ ACABANDO (" + baixo.length + ")*");
+      baixo.forEach(function(i){ L.push(i.emoji + " " + i.nome + " — " + i.unid); });
+    }
+    var obs = (document.getElementById("obs").value || "").trim();
+    if(obs){ L.push(""); L.push("_Obs.: " + obs + "_"); }
+
+    var link = montaLink();
+    if(link){
+      L.push("");
+      L.push("Daniela, marque aqui o que comprou:");
+      L.push(link);
+    }
+    var naoConf = itens().filter(function(i){ return !marcas[i.id]; }).length;
+    if(naoConf > 0){ L.push(""); L.push("(" + naoConf + " itens ainda não conferidos)"); }
+    return L.join("\n");
+  }
+
+  function textoCompra(){
+    var comprei = [], naoAchei = [], naoComprei = [];
+    LINK.itens.forEach(function(i){
+      var v = marcas[i.id];
+      if(v === "ok") comprei.push(i);
+      if(v === "falta") naoAchei.push(i);
+      if(v === "baixo") naoComprei.push(i);
+    });
+    var t = agora(), L = [];
+    L.push("*Compras feitas — Delícias DuFeDaJu*");
+    L.push(t.data + " às " + t.hora + " · lista de " + LINK.quem + " (" + LINK.quando + ")");
+    if(comprei.length){
+      L.push("");
+      L.push("*COMPREI (" + comprei.length + ")*");
+      comprei.forEach(function(i){ L.push(i.emoji + " " + i.nome + " — " + i.unid); });
+    }
+    if(naoAchei.length){
+      L.push("");
+      L.push("*NÃO ACHEI (" + naoAchei.length + ")*");
+      naoAchei.forEach(function(i){ L.push(i.emoji + " " + i.nome + " — " + i.unid); });
+    }
+    if(naoComprei.length){
+      L.push("");
+      L.push("*NÃO COMPREI (" + naoComprei.length + ")*");
+      naoComprei.forEach(function(i){ L.push(i.emoji + " " + i.nome + " — " + i.unid); });
+    }
+    var obs = (document.getElementById("obs").value || "").trim();
+    if(obs){ L.push(""); L.push("_Obs.: " + obs + "_"); }
+    var falta = LINK.itens.length - comprei.length - naoAchei.length - naoComprei.length;
+    if(falta > 0){ L.push(""); L.push("(" + falta + " itens ainda não resolvidos)"); }
+    return L.join("\n");
+  }
+
+  function montaTexto(){ return COMPRA ? textoCompra() : textoLoja(); }
+
+  /* ================= PAINÉIS ================= */
+
+  function abre(el){ el.classList.add("open"); }
+  function fecha(el){ el.classList.remove("open"); }
+  var bdEnvio = document.getElementById("bd-envio");
+  var bdConfig = document.getElementById("bd-config");
+  var bdZerar = document.getElementById("bd-zerar");
+
+  document.getElementById("btn-enviar").addEventListener("click", function(){
+    if(!COMPRA){
+      document.getElementById("obs").value = st.obs || "";
+      document.getElementById("aviso-link").hidden = !!(st.base || "").trim();
+      document.getElementById("envio-titulo").textContent =
+        st.grupo ? "Mensagem para " + st.grupo : "Lista para o grupo";
+    }
+    document.getElementById("preview").textContent = montaTexto();
+    abre(bdEnvio);
+  });
+
+  document.getElementById("obs").addEventListener("input", function(){
+    if(!COMPRA){ st.obs = this.value; salvar(); }
+    document.getElementById("preview").textContent = montaTexto();
+  });
+  document.getElementById("fechar-envio").addEventListener("click", function(){ fecha(bdEnvio); });
+
+  document.getElementById("copiar").addEventListener("click", function(){
+    var t = montaTexto();
+    function feito(){
+      toast(COMPRA ? "Copiado — cole no grupo" : "Copiado — abra o grupo e cole");
+      if(!COMPRA){
+        var a = agora();
+        st.ultimo = a.curta + " às " + a.hora;
+        salvar();
+      }
+      fecha(bdEnvio);
+      render();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(feito, function(){ fallbackCopy(t, feito); });
+    } else { fallbackCopy(t, feito); }
+  });
+
+  function fallbackCopy(t, feito){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length);
+    var ok = false;
+    try{ ok = document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    if(ok) feito(); else toast("Não deu para copiar — selecione o texto acima");
+  }
+
+  /* ---------- Ajustes (só no modo loja) ---------- */
+  if(!COMPRA){
+    document.getElementById("btn-config").addEventListener("click", function(){
+      document.getElementById("quem").value = st.quem || "";
+      document.getElementById("grupo").value = st.grupo || "";
+      document.getElementById("base").value = st.base || "";
+      abre(bdConfig);
+    });
+    document.getElementById("quem").addEventListener("input", function(){ st.quem = this.value; salvar(); });
+    document.getElementById("grupo").addEventListener("input", function(){ st.grupo = this.value; salvar(); });
+    document.getElementById("base").addEventListener("input", function(){ st.base = this.value.trim(); salvar(); });
+    document.getElementById("fechar-config").addEventListener("click", function(){
+      document.body.classList.remove("editando");
+      document.getElementById("btn-editar").textContent = "Editar itens da lista";
+      fecha(bdConfig); render();
+    });
+    document.getElementById("btn-editar").addEventListener("click", function(){
+      var on = document.body.classList.toggle("editando");
+      this.textContent = on ? "Concluir edição" : "Editar itens da lista";
+      if(on){ fecha(bdConfig); toast("Toque no × para remover ou use o campo Add"); }
+      render();
+    });
+
+    document.getElementById("btn-nova").addEventListener("click", function(){
+      var feitos = itens().filter(function(i){ return marcas[i.id]; }).length;
+      document.getElementById("zerar-hint").textContent =
+        "Isso apaga as " + feitos + " marcações desta conferência. A lista de itens continua a mesma.";
+      abre(bdZerar);
+    });
+    document.getElementById("zerar-nao").addEventListener("click", function(){ fecha(bdZerar); });
+    document.getElementById("zerar-sim").addEventListener("click", function(){
+      marcas = {}; st.marcas = {}; st.obs = ""; salvar();
+      filtro = "todos";
+      [].forEach.call(document.querySelectorAll("#filters .chip"), function(c){
+        c.setAttribute("aria-pressed", c.dataset.f === "todos" ? "true" : "false");
+      });
+      fecha(bdZerar); render();
+      window.scrollTo({ top:0, behavior:"smooth" });
+      toast("Conferência zerada — pode começar");
+    });
+  }
+
+  [bdEnvio, bdConfig, bdZerar].forEach(function(bd){
+    bd.addEventListener("click", function(ev){ if(ev.target === bd) fecha(bd); });
+  });
+  document.addEventListener("keydown", function(ev){
+    if(ev.key === "Escape"){ fecha(bdEnvio); fecha(bdConfig); fecha(bdZerar); }
+  });
+
+  var toastEl = document.getElementById("toast"), toastT;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toastEl.classList.remove("show"); }, 2600);
+  }
+
+  /* ================= PARTIDA ================= */
+
+  /* Aberto pela internet? Então já sabemos o endereço do link da Daniela. */
+  if(!COMPRA && /^https?:$/.test(location.protocol)){
+    var aqui = location.origin + location.pathname;
+    if(st.base !== aqui){ st.base = aqui; salvar(); }
+  }
+
+  if(COMPRA){
+    document.getElementById("head-acoes").hidden = true;
+    document.getElementById("titulo").textContent = "Lista de compras";
+    document.getElementById("subline").textContent =
+      "Enviada por " + LINK.quem + (LINK.quando ? " · " + LINK.quando : "")
+      + " · " + LINK.itens.length + " itens";
+    document.getElementById("prog-rot").textContent = "Resolvidos";
+    document.getElementById("rot-pend").textContent = "Ainda não vi";
+    document.getElementById("rot-comprar").textContent = "Não trouxe";
+    document.getElementById("rot-falta").textContent = "não achei";
+    document.getElementById("rot-baixo").textContent = "não comprei";
+    document.getElementById("rot-ok").textContent = "comprei";
+    document.getElementById("envio-titulo").textContent = "Devolutiva para a loja";
+    document.getElementById("envio-hint").textContent =
+      "Confira o texto, copie e cole no grupo para a Kátia saber o que chegou.";
+    document.getElementById("obs").placeholder = "Ex.: o tomate estava caro, comprei só 1 kg";
+    document.querySelector(".passos").innerHTML =
+      "<li><span>Toque em <b>Copiar mensagem</b>.</span></li>"
+      + "<li><span>Abra o WhatsApp e entre no grupo.</span></li>"
+      + "<li><span>Segure o campo e toque em <b>Colar</b>. Depois é só enviar.</span></li>";
+  }
+
+  render();
+})();
+</script>
+
+</body>
+</html>
