@@ -465,6 +465,16 @@
       ["Saco plástico 20x30","kg"],["Saco plástico 15x25","kg"],["Saco hot dog 22x21","un"],
       ["Bandeja laminada","un"],["Caixa para bolo","un"],["Cakeboard / base de bolo","un"],
       ["Embalagem de torta","un"],["Flor de papel decorativa","pacote"]
+    ]],
+    /* Sempre acrescente categorias no FIM: o link da lista de compras
+       aponta para os itens pela posição, e inserir no meio deslocaria tudo. */
+    ["Limpeza e higiene pessoal", [
+      ["Detergente","un"],["Sabão em pó","pacote"],["Desinfetante","un"],
+      ["Água sanitária","un"],["Álcool 70%","un"],["Desengordurante","un"],
+      ["Esponja","pacote"],["Palha de aço","pacote"],["Pano de chão","un"],
+      ["Pano multiuso","pacote"],["Saco de lixo","pacote"],
+      ["Sabonete líquido","un"],["Papel higiênico","pacote"],["Papel toalha","pacote"],
+      ["Álcool em gel","un"],["Luva descartável","caixa"],["Touca descartável","pacote"]
     ]]
   ];
 
@@ -485,7 +495,12 @@
     "Acquamix (soda italiana)":"🍹","Saquê":"🍶",
     "Saco plástico 20x30":"🛍️","Saco plástico 15x25":"🛍️","Saco hot dog 22x21":"🥡",
     "Bandeja laminada":"🍽️","Caixa para bolo":"📦","Cakeboard / base de bolo":"🎂",
-    "Embalagem de torta":"🥧","Flor de papel decorativa":"🌸"
+    "Embalagem de torta":"🥧","Flor de papel decorativa":"🌸",
+    "Detergente":"🍽️","Sabão em pó":"🧺","Desinfetante":"🧴","Água sanitária":"🧪",
+    "Álcool 70%":"🧴","Desengordurante":"🍳","Esponja":"🧽","Palha de aço":"🧽",
+    "Pano de chão":"🧹","Pano multiuso":"🧽","Saco de lixo":"🗑️",
+    "Sabonete líquido":"🧼","Papel higiênico":"🧻","Papel toalha":"🧻",
+    "Álcool em gel":"🧴","Luva descartável":"🧤","Touca descartável":"🧢"
   };
   var PALAVRAS = [
     [/gas|botij/,"🔥"],[/oleo/,"🫗"],[/^sal$|sal /,"🧂"],[/acucar/,"🍬"],
@@ -505,7 +520,7 @@
   var EMOJI_CAT = {
     "Hortifruti":"🥬","Carnes e proteínas":"🥩","Frios e laticínios":"🧀","Pães":"🍞",
     "Congelados":"🧊","Mercearia":"🥫","Confeitaria e doces":"🧁","Bebidas":"🥤",
-    "Embalagens e descartáveis":"📦"
+    "Embalagens e descartáveis":"📦","Limpeza e higiene pessoal":"🧼"
   };
   function semAcento(s){
     return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
