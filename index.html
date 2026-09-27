@@ -193,6 +193,26 @@
     width:40px; height:40px; border-radius:10px; display:none; place-items:center; font-size:18px;
   }
   body.editando .del{display:grid}
+  .edt{
+    display:none; flex:0 0 auto; align-items:center; gap:6px; height:44px; padding:0 14px;
+    border:1px solid var(--brand); background:var(--brand-soft); color:var(--brand-ink);
+    border-radius:11px; font-family:var(--display); font-weight:600; font-size:13px;
+  }
+  body.editando .edt{display:flex}
+  .sair-edicao{
+    display:none; position:fixed; left:50%; transform:translateX(-50%);
+    bottom:calc(88px + env(safe-area-inset-bottom)); z-index:45;
+    align-items:center; gap:8px; height:48px; padding:0 20px; border-radius:99px;
+    border:0; background:var(--ink); color:var(--bg); box-shadow:var(--shadow);
+    font-family:var(--display); font-weight:700; font-size:15px; white-space:nowrap;
+  }
+  body.editando .sair-edicao{display:flex}
+  .editado{
+    display:inline-block; font-family:var(--display); font-weight:600; font-size:10px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--brand-ink);
+    background:var(--brand-soft); padding:1px 6px; border-radius:99px; margin-left:6px;
+    vertical-align:1px;
+  }
   body.editando .seg{display:none}
   .add-row{
     display:none; gap:8px; padding:10px 12px; border-top:1px dashed var(--line-2);
@@ -281,6 +301,15 @@
     border:1px solid var(--line-2); border-radius:11px; background:var(--surface);
   }
   .field textarea{min-height:76px; resize:vertical}
+  .field select{
+    width:100%; font:inherit; font-size:15px; padding:12px 14px; color:var(--ink);
+    border:1px solid var(--line-2); border-radius:11px; background:var(--surface);
+  }
+  .duo{display:flex; gap:10px}
+  .duo .field{flex:1; min-width:0}
+  .duo .field.curto{flex:0 0 92px}
+  #ed-emoji{text-align:center; font-size:24px; padding:8px 6px}
+  .sheet-actions button.discreto{flex:0 0 auto; padding:0 14px; color:var(--ink-2); font-weight:600}
   .field .help{font-size:12px; color:var(--ink-3); margin-top:6px}
   .aviso{
     margin-top:12px; padding:12px 14px; border-radius:11px;
@@ -420,9 +449,67 @@
       <label>Lista de itens</label>
       <button id="btn-editar" style="width:100%;height:50px;border-radius:11px;border:1px solid var(--line-2);background:var(--surface);font-family:var(--display);font-weight:600">Editar itens da lista</button>
       <p class="help">Adicione o que faltar ou remova o que vocês não usam mais.</p>
+      <button id="btn-exportar" style="width:100%;height:50px;margin-top:10px;border-radius:11px;border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand-ink);font-family:var(--display);font-weight:600">Exportar lista</button>
+      <p class="help">Copia as mudanças que você fez na lista neste aparelho, para colar na conversa
+      com o Claude e virar a lista oficial em todos os aparelhos.</p>
     </div>
     <div class="sheet-actions">
       <button class="primary" id="fechar-config">Pronto</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="bd-editar">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Editar item">
+    <h3>Editar item</h3>
+    <p class="hint" id="ed-hint">As mudanças valem só neste aparelho.</p>
+    <div class="field">
+      <label for="ed-nome">Nome</label>
+      <input id="ed-nome" autocomplete="off">
+    </div>
+    <div class="duo">
+      <div class="field">
+        <label for="ed-unid">Unidade</label>
+        <input id="ed-unid" list="unidades" autocomplete="off">
+        <datalist id="unidades">
+          <option value="un"></option><option value="kg"></option><option value="g"></option>
+          <option value="L"></option><option value="pacote"></option><option value="caixa"></option>
+          <option value="dúzia"></option><option value="fardo"></option><option value="maço"></option>
+          <option value="bandeja"></option><option value="cartela"></option><option value="lata"></option>
+          <option value="frasco"></option><option value="rolo"></option><option value="botijão"></option>
+        </datalist>
+      </div>
+      <div class="field curto">
+        <label for="ed-emoji">Emoji</label>
+        <input id="ed-emoji" autocomplete="off" maxlength="16">
+      </div>
+    </div>
+    <div class="field">
+      <label for="ed-cat">Categoria</label>
+      <select id="ed-cat"></select>
+    </div>
+    <p class="help" style="font-size:12px;color:var(--ink-3);margin:10px 0 0">
+      Para voltar ao emoji automático, apague o campo Emoji.</p>
+    <div class="sheet-actions">
+      <button class="discreto" id="ed-restaurar" hidden>Restaurar original</button>
+      <button id="ed-cancelar">Cancelar</button>
+      <button class="primary" id="ed-salvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="bd-exportar">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Exportar lista">
+    <h3>Exportar lista</h3>
+    <p class="hint" id="exp-hint">Estas são as mudanças feitas neste aparelho em relação à lista original.</p>
+    <div class="preview" id="exp-preview"></div>
+    <ol class="passos">
+      <li><span>Toque em <b>Copiar</b>.</span></li>
+      <li><span>Abra a conversa com o Claude e cole a mensagem.</span></li>
+    </ol>
+    <div class="sheet-actions">
+      <button id="exp-fechar">Voltar</button>
+      <button class="primary" id="exp-copiar">Copiar</button>
     </div>
   </div>
 </div>
@@ -437,6 +524,11 @@
     </div>
   </div>
 </div>
+
+<button class="sair-edicao" id="sair-edicao">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+  Concluir edição
+</button>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -455,47 +547,66 @@
 
   var CATALOGO = [
     ["Hortifruti", [
-      ["Alface","un"],["Tomate","kg"],["Cebola","kg"],["Cebola roxa","kg"],["Alho","kg"],
-      ["Cheiro verde","maço"],["Cebolinha","maço"],["Couve","maço"],["Limão","kg"],
+      ["Alface","un"],["Tomate","kg"],["Cebola","kg"],
+      ["Cebola roxa","kg"],["Alho","kg"],["Cheiro verde","maço"],
+      ["Cebolinha","maço"],["Couve","maço"],["Limão","kg"],
       ["Laranja","kg"],["Mandioca descascada","kg"]
     ]],
     ["Carnes e proteínas", [
-      ["Carne de hambúrguer","kg"],["Hambúrguer polpetone","pacote"],
-      ["Filé de peito de frango","bandeja"],["Filé de tilápia","kg"],
-      ["Salsicha","kg"],["Bacon fatiado","kg"],["Ovo","cartela"]
+      ["Carne de hambúrguer","kg"],["Hambúrguer polpetone","pacote"],["Filé de peito de frango","bandeja"],
+      ["Filé de tilápia","kg"],["Salsicha","kg"],["Bacon fatiado","kg"],
+      ["Ovo","cartela"]
     ]],
     ["Frios e laticínios", [
       ["Mussarela","kg"],["Queijo coalho","pacote"],["Queijo Vigor (peça)","un"],
       ["Requeijão Catupiry","un"]
     ]],
-    ["Pães", [ ["Pão de hambúrguer","un"],["Pão de cachorro-quente","un"] ]],
-    ["Congelados", [ ["Batata pré-frita","pacote"] ]],
+    ["Pães", [
+      ["Pão de hambúrguer","un"],["Pão de cachorro-quente","un"]
+    ]],
+    ["Congelados", [
+      ["Batata pré-frita","pacote"]
+    ]],
     ["Mercearia", [
       ["Farinha de trigo","pacote"],["Fubá","pacote"],["Fermento químico","un"],
       ["Leite de coco","un"],["Ketchup","un"],["Milho em conserva","lata"],
       ["Batata palha","pacote"]
     ]],
-    ["Confeitaria e doces", [ ["Doce de leite","pacote"],["Confeito perolado","un"] ]],
+    ["Confeitaria e doces", [
+      ["Doce de leite","pacote"],["Confeito perolado","un"]
+    ]],
     ["Bebidas", [
-      ["Refrigerante KC Zero PET","caixa"],["Coca-Cola lata","caixa"],
-      ["Coca-Cola vidro retornável","caixa"],["Cerveja Heineken 600ml","caixa"],
-      ["Cerveja Original 600ml","dúzia"],["Cerveja Antarctica 600ml","dúzia"],
+      ["Refrigerante KC Zero PET","caixa"],["Coca-Cola lata","caixa"],["Coca-Cola vidro retornável","caixa"],
+      ["Cerveja Heineken 600ml","caixa"],["Cerveja Original 600ml","dúzia"],["Cerveja Antarctica 600ml","dúzia"],
       ["Acquamix (soda italiana)","un"],["Saquê","un"]
     ]],
     ["Embalagens e descartáveis", [
       ["Saco plástico 20x30","kg"],["Saco plástico 15x25","kg"],["Saco hot dog 22x21","un"],
-      ["Bandeja laminada","un"],["Caixa para bolo","un"],["Cakeboard / base de bolo","un"],
-      ["Embalagem de torta","un"],["Flor de papel decorativa","pacote"]
+      ["Bandeja laminada","un"],["Caixa para bolo","un","removido"],["Cakeboard / base de bolo","un","removido"],
+      ["Embalagem de torta","un","removido"],["Flor de papel decorativa","pacote","removido"]
     ]],
-    /* Sempre acrescente categorias no FIM: o link da lista de compras
-       aponta para os itens pela posição, e inserir no meio deslocaria tudo. */
     ["Limpeza e higiene pessoal", [
       ["Detergente","un"],["Sabão em pó","pacote"],["Desinfetante","un"],
       ["Água sanitária","un"],["Álcool 70%","un"],["Desengordurante","un"],
       ["Esponja","pacote"],["Palha de aço","pacote"],["Pano de chão","un"],
-      ["Pano multiuso","pacote"],["Saco de lixo","pacote"],
-      ["Sabonete líquido","un"],["Papel higiênico","pacote"],["Papel toalha","pacote"],
-      ["Álcool em gel","un"],["Luva descartável","caixa"],["Touca descartável","pacote"]
+      ["Pano multiuso","pacote"],["Saco de lixo","pacote"],["Sabonete líquido","un"],
+      ["Papel higiênico","pacote"],["Papel toalha","pacote"],["Álcool em gel","un"],
+      ["Luva descartável","caixa"],["Touca descartável","pacote"]
+    ]],
+    /* REGRAS DO CATÁLOGO — o link da lista de compras aponta para cada item
+       pela POSIÇÃO dele aqui. Para não quebrar links já enviados:
+       · item ou categoria nova: SEMPRE no fim da lista. Para pôr um item novo
+         num grupo que já existe, repita o nome do grupo num bloco no fim —
+         ex.: ["Mercearia", [["Óleo de soja","caixa"]]]. Ele aparece dentro
+         de Mercearia normalmente.
+       · remover: NÃO apague a linha; acrescente "removido" como 3º valor —
+         ex.: ["Couve","maço","removido"].
+       · renomear ou trocar a unidade: pode editar a linha no lugar. */
+    ["Embalagens e descartáveis", [
+      ["Separador plástico de hambúrguer 15x15","pct"],["Papel antigordura 25x25 (forrar bowl)","pct"],["Guardanapo interfolhado simples 10x20cm (boca)","pct"]
+    ]],
+    ["Limpeza e higiene pessoal", [
+      ["Papel toalha interfolhado 20x20cm (banheiro)","pct"]
     ]]
   ];
 
@@ -558,9 +669,16 @@
   var PLANO = [];
   CATALOGO.forEach(function(c){
     c[1].forEach(function(it){
-      PLANO.push({ nome:it[0], unid:it[1], cat:c[0] });
+      PLANO.push({ nome:it[0], unid:it[1], cat:c[0], fora:it[2] === "removido" });
     });
   });
+
+  /* Nomes de grupo na ordem em que aparecem, sem repetir. */
+  function nomesDeGrupo(){
+    var g = [];
+    CATALOGO.forEach(function(c){ if(g.indexOf(c[0]) === -1) g.push(c[0]); });
+    return g;
+  }
 
   var ESTADOS_LOJA   = [["falta","Acabou"],["baixo","Acabando"],["ok","Tem"]];
   var ESTADOS_COMPRA = [["falta","Não achei"],["baixo","Não comprei"],["ok","Comprei"]];
@@ -611,9 +729,9 @@
       (p[4] || "").split(";").forEach(function(par){
         if(!par) return;
         var a = par.split("~");
-        d.itens.push({ nome:a[0], unid:a[1] || "un", cat:a[2] || "Outros", urg:a[3] });
+        d.itens.push({ nome:a[0], unid:a[1] || "un", cat:a[2] || "Outros", urg:a[3], emoji:a[4] || "" });
       });
-      d.itens.forEach(function(i){ i.emoji = emojiDe(i.nome, i.cat); i.id = slug(i.cat + "-" + i.nome); });
+      d.itens.forEach(function(i){ i.emoji = i.emoji || emojiDe(i.nome, i.cat); i.id = slug(i.cat + "-" + i.nome); });
       return d.itens.length ? d : null;
     }catch(e){ return null; }
   }
@@ -622,7 +740,7 @@
 
   var K = "ddfj-insumos-v1";
   function carregar(){
-    var base = { marcas:{}, extras:[], ocultos:[], quem:"Kátia", grupo:"", base:"", obs:"", ultimo:"" };
+    var base = { marcas:{}, extras:[], ocultos:[], edicoes:{}, quem:"Kátia", grupo:"", base:"", obs:"", ultimo:"" };
     try{
       var raw = localStorage.getItem(K);
       if(raw){ var o = JSON.parse(raw); for(var k in base){ if(o[k] != null) base[k] = o[k]; } }
@@ -652,13 +770,18 @@
   function itens(){
     if(COMPRA) return LINK.itens.slice();
     var out = [];
+    /* Item da lista original: o id nunca muda, então as marcações sobrevivem à edição.
+       O que foi editado neste aparelho fica em st.edicoes[id] e se sobrepõe ao original. */
     PLANO.forEach(function(it){
-      out.push({ id:slug(it.cat + "-" + it.nome), nome:it.nome, unid:it.unid, cat:it.cat,
-                 emoji:emojiDe(it.nome, it.cat), extra:false });
+      if(it.fora) return;
+      var id = slug(it.cat + "-" + it.nome), e = st.edicoes[id] || null;
+      var nome = (e && e.nome) || it.nome, unid = (e && e.unid) || it.unid, cat = (e && e.cat) || it.cat;
+      out.push({ id:id, nome:nome, unid:unid, cat:cat,
+                 emoji:(e && e.emoji) || emojiDe(nome, cat), extra:false, editado:!!e, orig:it });
     });
     st.extras.forEach(function(e){
       out.push({ id:e.id, nome:e.nome, unid:e.unid, cat:e.cat,
-                 emoji:emojiDe(e.nome, e.cat), extra:true });
+                 emoji:e.emoji || emojiDe(e.nome, e.cat), extra:true, editado:!!e.emoji });
     });
     return out.filter(function(i){ return st.ocultos.indexOf(i.id) === -1; });
   }
@@ -677,7 +800,7 @@
 
   function render(){
     var todos = itens();
-    var cats = [];
+    var cats = nomesDeGrupo();
     todos.forEach(function(i){ if(cats.indexOf(i.cat) === -1) cats.push(i.cat); });
 
     var editando = document.body.classList.contains("editando");
@@ -708,7 +831,11 @@
           + '<div class="nome"><b>' + esc(it.nome)
           + (COMPRA && it.urg ? '<span class="tag t-' + it.urg + '">'
               + (it.urg === "falta" ? "acabou" : "acabando") + '</span>' : '')
+          + (!COMPRA && it.editado ? '<span class="editado">editado</span>' : '')
           + '</b><small>' + esc(it.unid) + '</small></div>'
+          + (COMPRA ? '' : '<button class="edt" data-edit="' + it.id + '" aria-label="Editar ' + esc(it.nome) + '">'
+              + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg>'
+              + 'Editar</button>')
           + '<div class="seg" role="group" aria-label="' + esc(it.nome) + '">';
         ESTADOS.forEach(function(e){
           html += '<button class="v-' + e[0] + '" data-set="' + it.id + '" data-v="' + e[0] + '"'
@@ -841,6 +968,7 @@
       else render();
       return;
     }
+    if(b.dataset.edit){ abreEdicao(b.dataset.edit); return; }
     if(b.dataset.del){
       var did = b.dataset.del;
       st.extras = st.extras.filter(function(e){ return e.id !== did; });
@@ -885,8 +1013,8 @@
       for(var k = 0; k < PLANO.length; k++){
         if(PLANO[k].nome === i.nome && PLANO[k].cat === i.cat){ idx = k; break; }
       }
-      if(idx >= 0) base.push(idx + ":" + v);
-      else extra.push([i.nome, i.unid, i.cat, v].join("~"));
+      if(idx >= 0 && !i.editado) base.push(idx + ":" + v);
+      else extra.push([i.nome, i.unid, i.cat, v, i.editado ? i.emoji : ""].join("~"));
     });
     if(!base.length && !extra.length) return "";
     var carga = ["v1", st.quem || "Kátia", t.curta + " " + t.hora, base.join(";"), extra.join(";")].join("|");
@@ -964,11 +1092,148 @@
 
   /* ================= PAINÉIS ================= */
 
-  function abre(el){ el.classList.add("open"); }
+  function abre(el){
+    el.classList.add("open");
+    var t = document.getElementById("toast"); if(t) t.classList.remove("show");
+  }
   function fecha(el){ el.classList.remove("open"); }
   var bdEnvio = document.getElementById("bd-envio");
   var bdConfig = document.getElementById("bd-config");
   var bdZerar = document.getElementById("bd-zerar");
+  var bdEditar = document.getElementById("bd-editar");
+  var bdExportar = document.getElementById("bd-exportar");
+
+  /* ---------- Exportar lista ----------
+     Tudo o que foi mudado pela tela fica só no localStorage deste navegador.
+     Esta exportação junta essas mudanças num texto que dá para colar na conversa:
+     um resumo legível + um bloco de dados exato para levar ao CATALOGO do código. */
+  function textoExportacao(){
+    var porId = {};
+    PLANO.forEach(function(it){ porId[slug(it.cat + "-" + it.nome)] = it; });
+
+    var criados = st.extras.map(function(e){
+      return { cat:e.cat, nome:e.nome, unid:e.unid, emoji:e.emoji || "" };
+    });
+    var removidos = st.ocultos.filter(function(id){ return porId[id]; }).map(function(id){
+      var o = porId[id]; return { cat:o.cat, nome:o.nome };
+    });
+    var editados = Object.keys(st.edicoes).filter(function(id){
+      return porId[id] && st.ocultos.indexOf(id) === -1;
+    }).map(function(id){
+      var o = porId[id], e = st.edicoes[id];
+      return { de:{ cat:o.cat, nome:o.nome, unid:o.unid },
+               para:{ cat:e.cat || o.cat, nome:e.nome || o.nome, unid:e.unid || o.unid, emoji:e.emoji || "" } };
+    });
+
+    var t = agora(), L = [];
+    L.push("EXPORTAÇÃO DA LISTA DE INSUMOS");
+    L.push("Aparelho de " + (st.quem || "?") + " · " + t.data + " às " + t.hora);
+    if(!criados.length && !removidos.length && !editados.length){
+      L.push("");
+      L.push("Nenhuma mudança: este aparelho usa a lista original.");
+      return { texto:L.join("\n"), vazio:true };
+    }
+    if(criados.length){
+      L.push(""); L.push("CRIADOS (" + criados.length + ")");
+      criados.forEach(function(c){ L.push("+ " + c.cat + " › " + c.nome + " — " + c.unid + (c.emoji ? " " + c.emoji : "")); });
+    }
+    if(editados.length){
+      L.push(""); L.push("EDITADOS (" + editados.length + ")");
+      editados.forEach(function(e){
+        L.push("~ " + e.de.cat + " › " + e.de.nome + " — " + e.de.unid + "  ⇒  "
+          + (e.para.cat !== e.de.cat ? e.para.cat + " › " : "")
+          + e.para.nome + " — " + e.para.unid + (e.para.emoji ? " " + e.para.emoji : ""));
+      });
+    }
+    if(removidos.length){
+      L.push(""); L.push("REMOVIDOS (" + removidos.length + ")");
+      removidos.forEach(function(r){ L.push("− " + r.cat + " › " + r.nome); });
+    }
+    L.push("");
+    L.push("DADOS " + JSON.stringify({ v:1, criados:criados, editados:editados, removidos:removidos }));
+    return { texto:L.join("\n"), vazio:false };
+  }
+
+  var exportado = "";
+  document.getElementById("btn-exportar").addEventListener("click", function(){
+    var r = textoExportacao();
+    exportado = r.texto;
+    document.getElementById("exp-preview").textContent = r.texto;
+    document.getElementById("exp-hint").textContent = r.vazio
+      ? "Este aparelho não tem mudanças na lista — não há o que exportar."
+      : "Estas são as mudanças feitas neste aparelho em relação à lista original.";
+    document.getElementById("exp-copiar").disabled = r.vazio;
+    document.getElementById("exp-copiar").style.opacity = r.vazio ? ".45" : "1";
+    fecha(bdConfig);
+    abre(bdExportar);
+  });
+  document.getElementById("exp-fechar").addEventListener("click", function(){ fecha(bdExportar); });
+  document.getElementById("exp-copiar").addEventListener("click", function(){
+    function ok(){ toast("Copiado — cole na conversa com o Claude"); fecha(bdExportar); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(exportado).then(ok, function(){ fallbackCopy(exportado, ok); });
+    } else { fallbackCopy(exportado, ok); }
+  });
+
+  /* ---------- Editar item ---------- */
+  var emEdicao = null;
+  function limpa(t){ return String(t || "").replace(/[~;|]/g, " ").replace(/\s+/g, " ").trim(); }
+
+  function abreEdicao(id){
+    var it = itens().filter(function(i){ return i.id === id; })[0];
+    if(!it) return;
+    emEdicao = it;
+    document.getElementById("ed-nome").value = it.nome;
+    document.getElementById("ed-unid").value = it.unid;
+    document.getElementById("ed-emoji").value = it.emoji;
+    var sel = document.getElementById("ed-cat");
+    sel.innerHTML = nomesDeGrupo().map(function(g){
+      return '<option' + (g === it.cat ? ' selected' : '') + '>' + esc(g) + '</option>';
+    }).join("");
+    document.getElementById("ed-hint").textContent = it.extra
+      ? "Item criado neste aparelho. As mudanças valem só aqui."
+      : (it.editado
+          ? "Original: " + it.orig.nome + " — " + it.orig.unid + " (" + it.orig.cat + "). As mudanças valem só neste aparelho."
+          : "As mudanças valem só neste aparelho. Dá para voltar ao original depois.");
+    document.getElementById("ed-restaurar").hidden = it.extra || !it.editado;
+    abre(bdEditar);
+    setTimeout(function(){ document.getElementById("ed-nome").focus(); }, 60);
+  }
+
+  document.getElementById("ed-salvar").addEventListener("click", function(){
+    var it = emEdicao; if(!it) return;
+    var nome = limpa(document.getElementById("ed-nome").value);
+    var unid = limpa(document.getElementById("ed-unid").value) || "un";
+    var cat  = document.getElementById("ed-cat").value;
+    var emo  = limpa(document.getElementById("ed-emoji").value);
+    if(!nome){ document.getElementById("ed-nome").focus(); toast("O item precisa de um nome"); return; }
+    if(emo === emojiDe(nome, cat)) emo = "";   /* igual ao automático: não precisa guardar */
+
+    if(it.extra){
+      st.extras.forEach(function(e){
+        if(e.id !== it.id) return;
+        e.nome = nome; e.unid = unid; e.cat = cat;
+        if(emo) e.emoji = emo; else delete e.emoji;
+      });
+    } else {
+      var o = it.orig, ed = {};
+      if(nome !== o.nome) ed.nome = nome;
+      if(unid !== o.unid) ed.unid = unid;
+      if(cat  !== o.cat)  ed.cat  = cat;
+      if(emo) ed.emoji = emo;
+      if(Object.keys(ed).length) st.edicoes[it.id] = ed; else delete st.edicoes[it.id];
+    }
+    salvar(); fecha(bdEditar); render(); toast(nome + " atualizado");
+    emEdicao = null;
+  });
+
+  document.getElementById("ed-restaurar").addEventListener("click", function(){
+    var it = emEdicao; if(!it || it.extra) return;
+    delete st.edicoes[it.id];
+    salvar(); fecha(bdEditar); render(); toast(it.orig.nome + " voltou ao original");
+    emEdicao = null;
+  });
+  document.getElementById("ed-cancelar").addEventListener("click", function(){ fecha(bdEditar); emEdicao = null; });
 
   document.getElementById("btn-enviar").addEventListener("click", function(){
     if(!COMPRA){
@@ -1030,10 +1295,15 @@
       document.getElementById("btn-editar").textContent = "Editar itens da lista";
       fecha(bdConfig); render();
     });
+    document.getElementById("sair-edicao").addEventListener("click", function(){
+      document.body.classList.remove("editando");
+      document.getElementById("btn-editar").textContent = "Editar itens da lista";
+      render(); toast("Edição concluída");
+    });
     document.getElementById("btn-editar").addEventListener("click", function(){
       var on = document.body.classList.toggle("editando");
       this.textContent = on ? "Concluir edição" : "Editar itens da lista";
-      if(on){ fecha(bdConfig); toast("Toque no × para remover ou use o campo Add"); }
+      if(on){ fecha(bdConfig); toast("Modo edição ligado"); }
       render();
     });
 
@@ -1056,11 +1326,11 @@
     });
   }
 
-  [bdEnvio, bdConfig, bdZerar].forEach(function(bd){
+  [bdEnvio, bdConfig, bdZerar, bdEditar, bdExportar].forEach(function(bd){
     bd.addEventListener("click", function(ev){ if(ev.target === bd) fecha(bd); });
   });
   document.addEventListener("keydown", function(ev){
-    if(ev.key === "Escape"){ fecha(bdEnvio); fecha(bdConfig); fecha(bdZerar); }
+    if(ev.key === "Escape"){ fecha(bdEnvio); fecha(bdConfig); fecha(bdZerar); fecha(bdEditar); fecha(bdExportar); }
   });
 
   var toastEl = document.getElementById("toast"), toastT;
@@ -1071,6 +1341,45 @@
   }
 
   /* ================= PARTIDA ================= */
+
+  /* Conciliação: quando uma mudança feita pela tela passa a fazer parte do
+     catálogo oficial, a cópia local deixa de ser necessária — senão o item
+     apareceria duas vezes. A marcação do dia é transferida para o oficial. */
+  if(!COMPRA){
+    var mudou = false;
+    var oficiais = {};
+    PLANO.forEach(function(it){ if(!it.fora) oficiais[slug(it.cat + "-" + it.nome)] = true; });
+    st.extras = st.extras.filter(function(e){
+      var idOf = slug(e.cat + "-" + e.nome);
+      if(!oficiais[idOf]) return true;
+      if(st.marcas[e.id] && !st.marcas[idOf]) st.marcas[idOf] = st.marcas[e.id];
+      delete st.marcas[e.id];
+      mudou = true;
+      return false;
+    });
+    /* Item editado que virou oficial com o nome novo: o id antigo some do
+       catálogo. Descobre o id novo e leva a marcação do dia junto. */
+    var grupos = nomesDeGrupo().map(function(g){ return slug(g); })
+      .sort(function(a, b){ return b.length - a.length; });
+    Object.keys(st.edicoes).forEach(function(id){
+      if(oficiais[id]) return;
+      var e = st.edicoes[id], pre = null;
+      for(var g = 0; g < grupos.length; g++){ if(id.indexOf(grupos[g] + "-") === 0){ pre = grupos[g]; break; } }
+      if(pre){
+        var novo = slug(e.cat || pre) + "-" + (e.nome ? slug(e.nome) : id.slice(pre.length + 1));
+        if(oficiais[novo] && st.marcas[id] && !st.marcas[novo]) st.marcas[novo] = st.marcas[id];
+      }
+      delete st.marcas[id];
+      delete st.edicoes[id];
+      mudou = true;
+    });
+    var antes = st.ocultos.length;
+    st.ocultos = st.ocultos.filter(function(id){
+      return id.indexOf("x-") === 0 || oficiais[id];
+    });
+    if(st.ocultos.length !== antes) mudou = true;
+    if(mudou){ marcas = st.marcas; salvar(); }
+  }
 
   /* Aberto pela internet? Então já sabemos o endereço do link da Daniela. */
   if(!COMPRA && /^https?:$/.test(location.protocol)){
