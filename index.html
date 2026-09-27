@@ -120,6 +120,20 @@
   .chip[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
   .chip .n{font-variant-numeric:tabular-nums; opacity:.7; margin-left:5px}
 
+  /* Menu "Categorias": pula direto para um grupo */
+  .jump{flex:0 0 auto; position:relative; display:flex; align-items:center}
+  .jump select{
+    -webkit-appearance:none; appearance:none; margin:0;
+    border:1px solid var(--brand); background:var(--brand-soft); color:var(--brand-ink);
+    border-radius:99px; padding:8px 30px 8px 33px; cursor:pointer;
+    font-family:var(--body); font-size:13px; font-weight:bold; line-height:1.2;
+    width:138px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;
+  }
+  .jump svg{position:absolute; pointer-events:none; color:var(--brand-ink)}
+  .jump .ic-l{left:12px}
+  .jump .ic-r{right:11px}
+  .cat{scroll-margin-top:calc(var(--head-h, 210px) + 10px)}
+
   /* ---------- Lista ---------- */
   .cat{margin-top:26px}
   .cat-head{display:flex; align-items:center; gap:10px; padding:0 4px 8px}
@@ -151,7 +165,7 @@
   .row.hit-baixo .emoji{background:var(--warn-soft); border-color:transparent}
   .row.hit-falta .emoji{background:var(--crit-soft); border-color:transparent}
   .nome{flex:1; min-width:0}
-  .nome b{display:block; font-weight:bold; font-size:15px; line-height:1.25}
+  .nome b{display:block; font-weight:bold; font-size:15px; line-height:1.25; overflow-wrap:anywhere; hyphens:auto; -webkit-hyphens:auto}
   .nome small{color:var(--ink-3); font-size:12px}
   .tag{
     display:inline-block; font-family:var(--display); font-weight:600; font-size:10px;
@@ -328,6 +342,13 @@
     </div>
 
     <div class="filters" id="filters">
+      <label class="jump">
+        <svg class="ic-l" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
+        <select id="jump" aria-label="Ir direto para uma categoria">
+          <option value="">Categorias</option>
+        </select>
+        <svg class="ic-r" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </label>
       <button class="chip" data-f="todos" aria-pressed="true">Todos <span class="n" id="c-todos">0</span></button>
       <button class="chip" data-f="pendentes" aria-pressed="false"><span id="rot-pend">Não conferidos</span> <span class="n" id="c-pendentes">0</span></button>
       <button class="chip" data-f="comprar" aria-pressed="false"><span id="rot-comprar">Precisa comprar</span> <span class="n" id="c-comprar">0</span></button>
@@ -673,7 +694,8 @@
         var v = marcas[i.id]; return v === "falta" || v === "baixo";
       }).length;
 
-      html += '<section class="cat"><div class="cat-head"><h2>' + esc(cat) + '</h2>'
+      html += '<section class="cat" id="cat-' + slug(cat) + '" data-cat="' + esc(cat) + '" data-n="' + alvo.length + '">'
+        + '<div class="cat-head"><h2>' + esc(cat) + '</h2>'
         + '<div class="rule"></div>'
         + (pend ? '<span class="pend">' + pend + (COMPRA ? ' pendente' + (pend > 1 ? "s" : "") : ' p/ comprar') + '</span>' : '')
         + '</div><div class="items">';
@@ -709,8 +731,36 @@
         : (COMPRA ? "Você já passou por todos os itens." : "Todos os itens já foram conferidos.")) + '</div>';
     }
     lista.innerHTML = html;
+    montaMenu();
     atualizaTopo(todos);
+    medeTopo();
   }
+
+  /* ---------- Menu de categorias ---------- */
+  var jump = document.getElementById("jump");
+  function montaMenu(){
+    var ops = '<option value="">Categorias</option>';
+    [].forEach.call(lista.querySelectorAll("section.cat"), function(sec){
+      ops += '<option value="' + sec.id + '">' + esc(sec.dataset.cat)
+        + ' (' + sec.dataset.n + ')</option>';
+    });
+    jump.innerHTML = ops;
+    jump.value = "";
+  }
+  jump.addEventListener("change", function(){
+    var alvo = this.value && document.getElementById(this.value);
+    this.value = "";
+    if(!alvo) return;
+    var calmo = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    alvo.scrollIntoView({ behavior: calmo ? "auto" : "smooth", block: "start" });
+  });
+
+  /* O cabeçalho fica fixo no topo; o grupo precisa parar logo abaixo dele. */
+  function medeTopo(){
+    var h = document.querySelector(".top").offsetHeight;
+    document.documentElement.style.setProperty("--head-h", h + "px");
+  }
+  window.addEventListener("resize", medeTopo);
 
   function pct(a, b){ return b ? (a * 100 / b).toFixed(2) + "%" : "0%"; }
 
