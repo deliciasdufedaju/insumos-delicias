@@ -414,10 +414,24 @@
   .cat-aba[aria-selected="true"] .cnt{background:var(--brand-soft); color:var(--brand-ink)}
   .cat-aba .ok{color:var(--brand); font-size:15px; line-height:1}
   .filters{margin-top:10px}
-  .proxima{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:54px;
-    margin-top:18px; border-radius:var(--r); border:1px solid var(--brand); background:var(--brand-soft);
-    color:var(--brand-ink); font-family:var(--display); font-weight:700; font-size:15px}
-  .proxima.fim{border-color:var(--line-2); background:var(--surface); color:var(--ink-2)}
+  .cat-nav{display:flex; align-items:stretch; margin:12px -16px 0; border-bottom:1px solid var(--line)}
+  .cat-nav .cat-abas{flex:1; min-width:0; margin:0; padding:0 4px; border-bottom:0; position:relative}
+  .cat-seta{flex:0 0 auto; width:40px; display:grid; place-items:center; border:0; background:none;
+    color:var(--brand-ink); padding:0}
+  .cat-seta:disabled{color:var(--line-2)}
+  .cat-seta:not(:disabled):active{background:var(--brand-soft)}
+
+  /* ---------- busca ---------- */
+  .busca{display:none; align-items:center; gap:8px; margin-top:12px; padding:0 6px 0 12px; height:48px;
+    border:1.5px solid var(--brand); border-radius:12px; background:var(--surface); color:var(--ink-3)}
+  body.buscando .busca{display:flex}
+  body.buscando .cat-nav, body.buscando .filters{display:none}
+  body.buscando #btn-busca{background:var(--brand-soft); color:var(--brand-ink); border-color:var(--brand)}
+  .busca input{flex:1; min-width:0; border:0; outline:0; background:none; font:inherit; font-size:16px; color:var(--ink); height:100%}
+  .busca input::-webkit-search-cancel-button{display:none}
+  .busca button{height:36px; padding:0 12px; border:0; border-radius:8px; background:var(--surface-2);
+    font-family:var(--display); font-weight:600; font-size:13px; color:var(--ink-2)}
+  .busca-res{margin:14px 4px 0; font-size:13px; color:var(--ink-3)}
 </style>
 </head>
 <body>
@@ -430,6 +444,9 @@
         <button class="btn-nova" id="btn-nova">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
           <span>Nova conferência</span>
+        </button>
+        <button class="icon-btn" id="btn-busca" aria-label="Buscar item">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
         </button>
         <button class="icon-btn" id="btn-config" aria-label="Ajustes">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.35.42.63.77.77H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -454,7 +471,17 @@
       </div>
     </div>
 
-    <div class="cat-abas" id="cat-abas" role="tablist" aria-label="Categorias"></div>
+    <div class="busca" id="busca">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input type="search" id="in-busca" placeholder="Buscar item (ex.: cebola)" autocomplete="off" enterkeyhint="search" aria-label="Buscar item">
+      <button id="busca-fechar">Fechar</button>
+    </div>
+
+    <div class="cat-nav">
+      <button class="cat-seta" id="cat-ant" aria-label="Categoria anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+      <div class="cat-abas" id="cat-abas" role="tablist" aria-label="Categorias"></div>
+      <button class="cat-seta" id="cat-prox" aria-label="Próxima categoria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+    </div>
 
     <div class="filters" id="filters">
       <button class="chip" data-f="todos" aria-pressed="true">Todos <span class="n" id="c-todos">0</span></button>
@@ -707,6 +734,7 @@
   var linkAntigo = /[#&]c=/.test(location.hash);
   var filtro = "todos";
   var catSel = cfg.cat || "todas";     // "todas" ou o id da categoria (texto)
+  var catVer = catSel;                  // a que está aparecendo de fato
   var online = true, sincronizadoEm = null, devendoDesenho = false;
 
   /* ---------------- conversa com o banco ---------------- */
@@ -870,6 +898,36 @@
     return h + '</div></div>';
   }
 
+  var campoBusca = document.getElementById("in-busca");
+  function termoBusca(){
+    if(!document.body.classList.contains("buscando")) return [];
+    return semAcento(campoBusca.value).split(/\s+/).filter(Boolean);
+  }
+  function achou(it, termos){
+    var alvo = semAcento(it.nome + " " + it.cat);
+    return termos.every(function(t){ return alvo.indexOf(t) >= 0; });
+  }
+  function abreBusca(){
+    document.body.classList.add("buscando");
+    campoBusca.focus(); campoBusca.select();
+    medeTopo();
+  }
+  function fechaBusca(){
+    campoBusca.value = "";
+    document.body.classList.remove("buscando");
+    campoBusca.blur();
+    render(); window.scrollTo({ top:0 });
+  }
+  document.getElementById("btn-busca").addEventListener("click", function(){
+    document.body.classList.contains("buscando") ? fechaBusca() : abreBusca();
+  });
+  document.getElementById("busca-fechar").addEventListener("click", fechaBusca);
+  campoBusca.addEventListener("input", function(){ render(); window.scrollTo({ top:0 }); });
+  campoBusca.addEventListener("keydown", function(ev){
+    if(ev.key === "Enter") campoBusca.blur();          /* fecha o teclado e mostra o resultado */
+    if(ev.key === "Escape") fechaBusca();
+  });
+
   function render(){
     document.querySelectorAll(".aba").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.aba === aba ? "true" : "false"); });
     if(!E){ atualizaTopo([]); return; }
@@ -882,14 +940,18 @@
     var cats = categorias().filter(function(c){
       return aba === "conferencia" || todos.some(function(i){ return i.categoria_id === c.id; });
     });
-    if(catSel !== "todas" && !cats.some(function(c){ return String(c.id) === catSel; })) catSel = "todas";
+    /* A escolha fica guardada; se a categoria não aparece aqui (ex.: Compras), mostra Todas sem esquecer. */
+    catVer = cats.some(function(c){ return String(c.id) === catSel; }) ? catSel : "todas";
     montaAbasCategoria(cats, todos);
-    var mostrar = catSel === "todas" ? cats : cats.filter(function(c){ return String(c.id) === catSel; });
+    /* Busca: procura em todas as categorias, ignorando aba e filtro. */
+    var termos = termoBusca();
+    var mostrar = (termos.length || catVer === "todas") ? cats : cats.filter(function(c){ return String(c.id) === catVer; });
 
     mostrar.forEach(function(c){
       var doGrupo = todos.filter(function(i){ return i.categoria_id === c.id; });
-      var alvo = ed ? doGrupo : doGrupo.filter(function(i){ return passaFiltro(i); });
-      if(!alvo.length && !ed) return;
+      var alvo = termos.length ? doGrupo.filter(function(i){ return achou(i, termos); })
+               : (ed ? doGrupo : doGrupo.filter(function(i){ return passaFiltro(i); }));
+      if(!alvo.length && (!ed || termos.length)) return;
       visiveis += alvo.length;
       var pend = doGrupo.filter(function(i){
         var m = marca(i.id);
@@ -903,7 +965,7 @@
               + (doGrupo.length ? "" : '<button class="mini perigo" data-cat-del="' + c.id + '">Excluir</button>') + '</div>' : "")
         + '</div><div class="items">';
       alvo.forEach(function(it){ html += aba === "conferencia" ? linhaConferencia(it) : linhaCompra(it); });
-      if(ed){
+      if(ed && !termos.length){
         html += '<div class="add-row"><input placeholder="Novo item em ' + esc(c.nome) + '" data-add-nome="' + c.id + '">'
           + '<input class="u" placeholder="un" data-add-unid="' + c.id + '">'
           + '<button data-add="' + c.id + '">Add</button></div>';
@@ -911,15 +973,12 @@
       html += '</div></section>';
     });
 
-    /* Seguir em ordem: no fim de uma categoria, atalho para a próxima. */
-    if(catSel !== "todas"){
-      var pos = cats.map(function(c){ return String(c.id); }).indexOf(catSel);
-      var prox = cats[pos + 1];
-      if(prox) html += '<button class="proxima" data-cat-ir="' + prox.id + '">Próxima: ' + esc(prox.nome) + ' <span aria-hidden="true">→</span></button>';
-      else if(!ed) html += '<button class="proxima fim" data-cat-ir="todas">Última categoria · ver todas</button>';
-    }
-
-    if(ed){
+    if(termos.length){
+      html = '<p class="busca-res">' + (visiveis ? visiveis + (visiveis === 1 ? " item encontrado" : " itens encontrados")
+             + (aba === "compras" ? " na lista de compras" : "") : "") + '</p>' + html;
+      if(!visiveis) html = '<div class="vazio">Nenhum item com “' + esc(campoBusca.value.trim()) + '”'
+             + (aba === "compras" ? " na lista de compras. Procure na aba Conferência." : ".") + '</div>';
+    } else if(ed){
       html += '<div class="nova-cat"><label for="nova-cat">Nova categoria</label>'
         + '<input id="nova-cat" placeholder="Ex.: Gás e combustível"><button data-cat-nova="1">Criar</button></div>';
     } else if(!visiveis){
@@ -931,8 +990,8 @@
     lista.innerHTML = html;
     atualizaTopo(itens());
     /* Com uma categoria aberta, os números dos filtros contam só ela. */
-    if(catSel !== "todas"){
-      var daCat = todos.filter(function(i){ return String(i.categoria_id) === catSel; });
+    if(catVer !== "todas" && !termos.length){
+      var daCat = todos.filter(function(i){ return String(i.categoria_id) === catVer; });
       ["todos","pendentes","comprar"].forEach(function(f){
         document.getElementById("c-" + f).textContent = daCat.filter(function(i){ return passaFiltro(i, f); }).length;
       });
@@ -1014,6 +1073,14 @@
 
   /* ---------------- abas de categoria ---------------- */
   var faixa = document.getElementById("cat-abas");
+  var setaAnt = document.getElementById("cat-ant"), setaProx = document.getElementById("cat-prox");
+  var ordemCats = ["todas"];
+  function andaCategoria(passo){
+    var i = ordemCats.indexOf(catVer) + passo;
+    if(i >= 0 && i < ordemCats.length) irParaCategoria(ordemCats[i]);
+  }
+  setaAnt.addEventListener("click", function(){ andaCategoria(-1); });
+  setaProx.addEventListener("click", function(){ andaCategoria(1); });
   function montaAbasCategoria(cats, todos){
     var conf = aba === "conferencia";
     function andamento(lista){
@@ -1024,13 +1091,17 @@
       var sem = lista.filter(function(i){ return !marca(i.id).compra; }).length;
       return sem ? '<span class="cnt">' + sem + "</span>" : '<span class="ok">✓</span>';
     }
-    var h = '<button class="cat-aba" role="tab" data-cat-ir="todas" aria-selected="' + (catSel === "todas") + '">Todas ' + andamento(todos) + "</button>";
+    var h = '<button class="cat-aba" role="tab" data-cat-ir="todas" aria-selected="' + (catVer === "todas") + '">Todas ' + andamento(todos) + "</button>";
     cats.forEach(function(c){
       var doGrupo = todos.filter(function(i){ return i.categoria_id === c.id; });
-      h += '<button class="cat-aba" role="tab" data-cat-ir="' + c.id + '" aria-selected="' + (catSel === String(c.id)) + '">'
+      h += '<button class="cat-aba" role="tab" data-cat-ir="' + c.id + '" aria-selected="' + (catVer === String(c.id)) + '">'
         + esc(c.nome) + " " + andamento(doGrupo) + "</button>";
     });
     faixa.innerHTML = h;
+    ordemCats = ["todas"].concat(cats.map(function(c){ return String(c.id); }));
+    var pos = ordemCats.indexOf(catVer);
+    setaAnt.disabled = pos <= 0;
+    setaProx.disabled = pos >= ordemCats.length - 1;
     var ativa = faixa.querySelector('[aria-selected="true"]');
     if(ativa) faixa.scrollLeft = Math.max(0, ativa.offsetLeft - 16);
   }
